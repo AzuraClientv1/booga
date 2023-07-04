@@ -1,0 +1,952 @@
+local SolarisLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/sol"))()
+
+
+local win = SolarisLib:New({
+  Name = "Booga Hybrid | Admin Panel | V1.6.2",
+  FolderToSave = "SolarisLibStuff"
+})
+
+
+
+
+local tab4 = win:Tab("Combat")
+
+local sec = tab4:Section("Useful in combat/pvp")
+
+sec:Button("Dupe", function()
+  local repStorage = game:GetService("ReplicatedStorage")
+
+  local function impact(playerOrModel)
+      repStorage.Events.Bow.Impact:FireServer({
+          location = Vector3.zero,
+          weaponName = "The Meatmaker",
+          id = 1,
+          hit = playerOrModel
+      })
+  end
+  
+  --[[
+  StorageSwap:
+  a1,a2,a3;
+  inventorySlot,amount,ToFrom(false: in)
+  ]]
+  local inventory = getrenv()._G.data.inventory
+  local function GetItemSlot(itemname)
+      for i,v in ipairs(inventory) do
+          if v.name == itemname then
+              return i
+          end
+      end
+  
+      return -1
+  end
+  
+  local function EmptyLootBag(bag)
+      repStorage.Events.OpenStorage:FireServer(bag)
+  
+      local swap = repStorage.Events.StorageSwap
+      swap:FireServer(1,math.huge,true)
+  end
+  
+  for i,v in ipairs(workspace.Deployables:GetChildren()) do
+      if v.Name ~= "Chest" then continue end
+  
+      repStorage.Events.OpenStorage:FireServer(v)
+  
+      local swap = repStorage.Events.StorageSwap
+      swap:FireServer(GetItemSlot("Big Domestic Shelly"),math.huge,false)
+  
+      spawn(function()
+          local swap = repStorage.Events.StorageSwap
+          swap:FireServer(1,math.huge,true)
+      end)
+  
+      impact(v)
+  
+      repeat task.wait(.1) until workspace:FindFirstChild("Loot")
+  
+  
+      for i,v in ipairs(workspace:GetChildren()) do
+          if v.Name ~= "Loot" then continue end
+  
+          EmptyLootBag(v)
+      end
+  
+      wait(0.1)
+  end
+end)
+
+
+sec:Bind("Auto Heal", Enum.KeyCode.F, false, "BindNormal", function()
+
+  game:GetService("ReplicatedStorage").Events.Consume:FireServer("God Fish")
+  wait(0.0)
+
+ game:GetService("ReplicatedStorage").Events.Consume:FireServer("God Fish")
+  wait(0.0)
+
+ game:GetService("ReplicatedStorage").Events.Consume:FireServer("God Fish")
+  wait(0.0)
+
+ game:GetService("ReplicatedStorage").Events.Consume:FireServer("God Fish")
+  wait(0.0)
+
+ game:GetService("ReplicatedStorage").Events.Consume:FireServer("God Fish")
+  wait(0.0)
+
+ game:GetService("ReplicatedStorage").Events.Consume:FireServer("God Fish")
+  wait(0.0)    
+
+ game:GetService("ReplicatedStorage").Events.Consume:FireServer("God Fish")
+  wait(0.0)
+
+ game:GetService("ReplicatedStorage").Events.Consume:FireServer("God Fish")
+  wait(0.0)
+
+ game:GetService("ReplicatedStorage").Events.Consume:FireServer("God Fish")
+  wait(0.0)
+
+ game:GetService("ReplicatedStorage").Events.Consume:FireServer("God Fish")
+  wait(0.0)
+
+ game:GetService("ReplicatedStorage").Events.Consume:FireServer("Small Bandage")
+  wait(0.0)
+
+ game:GetService("ReplicatedStorage").Events.Consume:FireServer("Small Bandage")
+  wait(0.0)
+
+ game:GetService("ReplicatedStorage").Events.Consume:FireServer("Small Bandage")   
+
+end)
+
+
+
+sec:Button("Silent Aim", function()
+  print("still being worked on lol -script")
+end)
+
+
+
+
+sec:Button("Bow Glitch  {SPAM}", function()
+
+  game:GetService("ReplicatedStorage").Events.ToolSwap:FireServer(2,1)
+  wait(0.0000000000000000001)
+
+  game:GetService("ReplicatedStorage").Events.EquipTool:FireServer(2)
+end)
+
+
+sec:Button("Fly  {F}", function()
+
+  repeat wait()
+  until game.Players.LocalPlayer and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:findFirstChild("UpperTorso") and game.Players.LocalPlayer.Character:findFirstChild("Humanoid")
+  local mouse = game.Players.LocalPlayer:GetMouse()
+  repeat wait() until mouse
+  local plr = game.Players.LocalPlayer
+  local UpperTorso = plr.Character.UpperTorso
+  local flying = true
+  local deb = true
+  local ctrl = {f = 0, b = 0, l = 0, r = 0}
+  local lastctrl = {f = 0, b = 0, l = 0, r = 0}
+  local maxspeed = 1000
+  local speed = 240
+  
+  function Fly()
+  local bg = Instance.new("BodyGyro", UpperTorso)
+  bg.P = 9e4
+  bg.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+  bg.cframe = UpperTorso.CFrame
+  local bv = Instance.new("BodyVelocity", UpperTorso)
+  bv.velocity = Vector3.new(0,0.1,0)
+  bv.maxForce = Vector3.new(9e9, 9e9, 9e9)
+  repeat wait()
+  plr.Character.Humanoid.PlatformStand = true
+  if ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0 then
+  speed = speed+.5+(speed/maxspeed)
+  if speed > maxspeed then
+  speed = maxspeed
+  end
+  elseif not (ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0) and speed ~= 0 then
+  speed = speed-1
+  if speed < 0 then
+  speed = 0
+  end
+  end
+  if (ctrl.l + ctrl.r) ~= 0 or (ctrl.f + ctrl.b) ~= 0 then
+  bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (ctrl.f+ctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(ctrl.l+ctrl.r,(ctrl.f+ctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed
+  lastctrl = {f = ctrl.f, b = ctrl.b, l = ctrl.l, r = ctrl.r}
+  elseif (ctrl.l + ctrl.r) == 0 and (ctrl.f + ctrl.b) == 0 and speed ~= 0 then
+  bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (lastctrl.f+lastctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(lastctrl.l+lastctrl.r,(lastctrl.f+lastctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed
+  else
+  bv.velocity = Vector3.new(0,0.1,0)
+  end
+  bg.cframe = game.Workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(-math.rad((ctrl.f+ctrl.b)*50*speed/maxspeed),0,0)
+  until not flying
+  ctrl = {f = 0, b = 0, l = 0, r = 0}
+  lastctrl = {f = 0, b = 0, l = 0, r = 0}
+  speed = 0
+  bg:Destroy()
+  bv:Destroy()
+  plr.Character.Humanoid.PlatformStand = false
+  end
+  mouse.KeyDown:connect(function(key)
+  if key:lower() == "f" then
+  if flying then flying = false
+  else
+  flying = true
+  Fly()
+  end
+  elseif key:lower() == "w" then
+  ctrl.f = 1
+  elseif key:lower() == "s" then
+  ctrl.b = -1
+  elseif key:lower() == "a" then
+  ctrl.l = -1
+  elseif key:lower() == "d" then
+  ctrl.r = 1
+  end
+  end)
+  mouse.KeyUp:connect(function(key)
+  if key:lower() == "w" then
+  ctrl.f = 0
+  elseif key:lower() == "s" then
+  ctrl.b = 0
+  elseif key:lower() == "a" then
+  ctrl.l = 0
+  elseif key:lower() == "d" then
+  ctrl.r = 0
+  end
+  end)
+  Fly()    
+end)
+
+
+
+sec:Bind("Place God Hut", Enum.KeyCode.G, false, "BindNormal", function()
+  local plr = game:GetService("Players").LocalPlayer
+  local mouse = plr:GetMouse()
+  mouse.KeyDown:connect(function(key)
+      if key == "g" then
+  local Event = game:GetService("ReplicatedStorage").Events.PlaceStructure
+  Torso = game.Players.LocalPlayer.Character.UpperTorso
+  b = Torso.Position + Torso.CFrame.lookVector * 10
+  local c = b.x
+  local d = b.y - 2
+  local e = b.z
+  for i = 1,1 do
+  local A_1 = "God Hut"
+  local A_2 = CFrame.new(c, d, e, 1, 0, 0, 0, 1, -5.56028681e-08, 0, -5.56028681e-08, 1)
+  local A_3 = 0
+      Event:FireServer(A_1, A_2, A_3)
+  end end end)
+end)
+
+
+sec:Button("One Shotter", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/TimeManipulator/One-shotter/main/Stolen%20by%20script%236185?token=GHSAT0AAAAAAB46HI6XCAGA2ZGR2LPODQMQY5Y2J7Q"))()
+end)
+
+
+
+sec:Button("Invincibility", function()
+  if game.Players.LocalPlayer.Character ~= nil then
+		local char = game.Players.LocalPlayer.Character
+		char.Parent = nil
+		char.HumanoidRootPart:Destroy()
+		char.Parent = workspace
+	end
+end)
+
+
+
+
+
+
+local tab = win:Tab("Abuse")
+
+
+local sec = tab:Section("Main Shit")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sec:Button("Rejoin", function()
+    game:GetService("TeleportService"):Teleport(5901346231)
+    print('VoidTP Credits: script#6185')
+end)
+
+
+
+
+
+
+
+sec:Button("Water Walker On/Off", function()
+
+game:GetService("ReplicatedStorage").Events.ToggleMojo:FireServer("Water Walker")
+end)
+
+
+
+sec:Button("Scaffold", function()
+  local Fires = 1
+  local Event = game:GetService("ReplicatedStorage").Events.PlaceStructure
+  h = game.Players.LocalPlayer.Character.LowerTorso.Position
+  local c = h.x + 5
+  local d = h.y - 2
+  local e = h.z
+  local j = h.x
+  local k = h.y - 2
+  local l = h.z
+  local aa = h.x - 5
+  local bb = h.y - 2
+  local cc = h.z
+  local aaa = h.x
+  local bbb = h.y - 2
+  local ccc = h.z + 5
+  local aaaa = h.x
+  local bbbb = h.y - 2
+  local cccc = h.z - 5
+  for i = 1,1 do
+  local C_1 = "Chest"
+  local C_2 = CFrame.new(j, k, l, 1, 0, 0, 0, 1, -5.56028681e-08, 0, -5.56028681e-08, 1)
+  local C_3 = 0
+  Event:FireServer(C_1, C_2, C_3)
+  end
+  for i = 1,Fires do
+  local A_1 = "Chest"
+  local A_2 = CFrame.new(c, d, e, 1, 0, 0, 0, 1, -5.56028681e-08, 0, -5.56028681e-08, 1)
+  local A_3 = 0
+  Event:FireServer(A_1, A_2, A_3)
+  end
+  for i = 1,Fires do
+  local B_1 = "Chest"
+  local B_2 = CFrame.new(aa, bb, cc, 1, 0, 0, 0, 1, -5.56028681e-08, 0, -5.56028681e-08, 1)
+  local B_3 = 0
+  Event:FireServer(B_1, B_2, B_3)
+  end
+  for i = 1,Fires do
+  local D_1 = "Chest"
+  local D_2 = CFrame.new(aaa, bbb, ccc, 1, 0, 0, 0, 1, -5.56028681e-08, 0, -5.56028681e-08, 1)
+  local D_3 = 0
+  Event:FireServer(D_1, D_2, D_3)
+  end
+  for i = 1,Fires do
+  local E_1 = "Chest"
+  local E_2 = CFrame.new(aaaa, bbbb, cccc, 1, 0, 0, 0, 1, -5.56028681e-08, 0, -5.56028681e-08, 1)
+  local E_3 = 0
+  Event:FireServer(E_1, E_2, E_3)
+  end
+end)
+
+
+
+
+sec:Button("Redeem All Codes", function()
+game:GetService("ReplicatedStorage").Events.RedeemCode:FireServer("SUMMER2022")
+wait(0.2)
+game:GetService("ReplicatedStorage").Events.RedeemCode:FireServer("MasterSquid")
+wait(0.2)
+game:GetService("ReplicatedStorage").Events.RedeemCode:FireServer("APaperDeveloper")
+wait(0.2)
+game:GetService("ReplicatedStorage").Events.RedeemCode:FireServer("SpiderBro")
+wait(0.2)
+game:GetService("ReplicatedStorage").Events.RedeemCode:FireServer("Mole People")
+wait(0.2)
+game:GetService("ReplicatedStorage").Events.RedeemCode:FireServer("Hybrid")
+wait(0.2)
+end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+sec:Button("HD Admin Giver {Must have admin in game}", function()
+require(11560761226).HD("HeLloFrIeNdS930")
+end)
+
+
+
+sec:Button("Dark DexV5", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/TimeManipulator/DarkDex-V5/main/Stolen%20by%20script%236185"))()
+end)
+
+sec:Button("RevizV2", function()
+loadstring(game:HttpGet("https://pastebin.com/raw/8zh7FiHv"))()
+end)
+
+sec:Button("Vape4", function()
+  loadstring(game:HttpGet("https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/NewMainScript.lua", true))()
+end)
+
+sec:Button("Squid Cape", function()
+  local player = game:GetService("Players") local lplr = player.LocalPlayer if lplr.Character.Humanoid.RigType == Enum.HumanoidRigType.R15 then if lplr.Character:FindFirstChild("Torso") then torso = lplr.Character.Torso else torso = lplr.Character.UpperTorso end local CapeP = Instance.new("Part", torso.Parent) CapeP.Name = "Cape" CapeP.Anchored = false CapeP.CanCollide = false CapeP.TopSurface = 0 CapeP.BottomSurface = 0 CapeP.Color = Color3.fromRGB(0,0,0) CapeP.FormFactor = "Custom" CapeP.Size = Vector3.new(0.2,0.2,0.2) local decal = Instance.new("Decal", CapeP) decal.Texture = "http://www.roblox.com/asset/?id=9695902096" decal.Face = "Back" local msh = Instance.new("BlockMesh", CapeP) msh.Scale = Vector3.new(9,17.5,0.5) local motor = Instance.new("Motor", CapeP) motor.Part0 = CapeP motor.Part1 = torso motor.MaxVelocity = 0.01 motor.C0 = CFrame.new(0,1.75,0) * CFrame.Angles(0,math.rad(90),0) motor.C1 = CFrame.new(0,1,0.45) * CFrame.Angles(0,math.rad(90),0) local wave = false repeat wait(1/44) decal.Transparency = torso.Transparency local ang = 0.1 local oldmag = torso.Velocity.magnitude local mv = 0.002 if wave then ang = ang + ((torso.Velocity.magnitude/10) * 0.05) + 0.05 wave = false else wave = true end ang = ang + math.min(torso.Velocity.magnitude/11, 0.5) motor.MaxVelocity = math.min((torso.Velocity.magnitude/111), 0.04) + mv motor.DesiredAngle = -ang if motor.CurrentAngle < -0.2 and motor.DesiredAngle > -0.2 then motor.MaxVelocity = 0.04 end repeat wait() until motor.CurrentAngle == motor.DesiredAngle or math.abs(torso.Velocity.magnitude - oldmag) >= (torso.Velocity.magnitude/10) + 1 if torso.Velocity.magnitude < 0.1 then wait(0.1) end until not CapeP or CapeP.Parent ~= torso.Parent end
+end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local tab2 = win:Tab("Kill List")
+local sec = tab2:Section("Kill Shit")
+ 
+sec:Button("Kill Dancing Shellys", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/TimeManipulator/Kill-Dancing-Shellys/main/Public%20Script%20By%20script%236185%20V2"))()
+end)
+
+sec:Button("Kill Strange Meteor", function()
+
+end)
+
+sec:Button("Kill Bosses", function()
+
+end)
+
+sec:Button("Kill Critters", function()
+
+end)
+
+sec:Button("Kill Deployables", function()
+
+end)
+
+sec:Button("Kill Totems", function()
+
+end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local tab3 = win:Tab("Visuals")
+local sec = tab3:Section("Mainly to reduce shitty lag")
+
+
+sec:Button("FPS Boost", function()
+  _G.Settings = {
+    Players = {
+        ["Ignore Me"] = true, -- Ignore your Character
+        ["Ignore Others"] = true -- Ignore other Characters
+    },
+    Meshes = {
+        Destroy = false, -- Destroy Meshes
+        LowDetail = true -- Low detail meshes (NOT SURE IT DOES ANYTHING)
+    },
+    Images = {
+        Invisible = true, -- Invisible Images
+        LowDetail = false, -- Low detail images (NOT SURE IT DOES ANYTHING)
+        Destroy = false, -- Destroy Images
+    },
+    ["No Particles"] = true, -- Disables all ParticleEmitter, Trail, Smoke, Fire and Sparkles
+    ["No Camera Effects"] = true, -- Disables all PostEffect's (Camera/Lighting Effects)
+    ["No Explosions"] = true, -- Makes Explosion's invisible
+    ["No Clothes"] = true, -- Removes Clothing from the game
+    ["Low Water Graphics"] = true, -- Removes Water Quality
+    ["No Shadows"] = true, -- Remove Shadows
+    ["Low Rendering"] = true, -- Lower Rendering
+    ["Low Quality Parts"] = true -- Lower quality parts
+}
+loadstring(game:HttpGet("https://raw.githubusercontent.com/TimeManipulator/Public-FPS-Booster/main/Stolen%20by%20script%236185"))()
+end)
+
+sec:Button("Clear Resources", function()
+   workspace.Resources:ClearAllChildren()
+end)
+
+sec:Button("Clear Rubble", function()
+  workspace.Rubble:ClearAllChildren()
+end)
+
+sec:Button("Clear Decor", function()
+  workspace.Decor:ClearAllChildren()
+end)
+
+sec:Button("Clear Sharks", function()
+   workspace.Sharks:ClearAllChildren()
+end)
+
+
+sec:Button("Clear Items", function()
+   workspace.Items:ClearAllChildren()
+end)
+
+local sec = tab3:Section("Visual")
+
+sec:Button("Nametag ESP", function()
+  local esp_settings = { ---- table for esp settings 
+  textsize = 8,
+  colour = 255,255,255
+}
+
+local gui = Instance.new("BillboardGui")
+local esp = Instance.new("TextLabel",gui) ---- new instances to make the billboard gui and the textlabel
+
+
+
+gui.Name = "Cracked esp"; ---- properties of the esp
+gui.ResetOnSpawn = false
+gui.AlwaysOnTop = true;
+gui.LightInfluence = 0;
+gui.Size = UDim2.new(1.75, 0, 1.75, 0);
+esp.BackgroundColor3 = Color3.fromRGB(255, 255, 255);
+esp.Text = ""
+esp.Size = UDim2.new(0.0001, 0.00001, 0.0001, 0.00001);
+esp.BorderSizePixel = 4;
+esp.BorderColor3 = Color3.new(esp_settings.colour)
+esp.BorderSizePixel = 0
+esp.Font = "GothamSemibold"
+esp.TextSize = esp_settings.textsize
+esp.TextColor3 = Color3.fromRGB(esp_settings.colour) -- text colour
+
+game:GetService("RunService").RenderStepped:Connect(function() ---- loops faster than a while loop :)
+  for i,v in pairs (game:GetService("Players"):GetPlayers()) do
+      if v ~= game:GetService("Players").LocalPlayer and v.Character.Head:FindFirstChild("Cracked esp")==nil  then -- craeting checks for team check, local player etc
+          esp.Text = "{"..v.Name.."}"
+          gui:Clone().Parent = v.Character.Head
+  end
+end
+end)
+end)
+
+sec:Button("Box ESP", function()
+  local settings = {
+    defaultcolor = Color3.fromRGB(255,0,0),
+    teamcheck = false,
+    teamcolor = true
+ };
+ 
+ local runService = game:GetService("RunService");
+ local players = game:GetService("Players");
+ 
+ local localPlayer = players.LocalPlayer;
+ local camera = workspace.CurrentCamera;
+ 
+ local newVector2, newColor3, newDrawing = Vector2.new, Color3.new, Drawing.new;
+ local tan, rad = math.tan, math.rad;
+ local round = function(...) local a = {}; for i,v in next, table.pack(...) do a[i] = math.round(v); end return unpack(a); end;
+ local wtvp = function(...) local a, b = camera.WorldToViewportPoint(camera, ...) return newVector2(a.X, a.Y), b, a.Z end;
+ 
+ local espCache = {};
+ local function createEsp(player)
+    local drawings = {};
+    
+    drawings.box = newDrawing("Square");
+    drawings.box.Thickness = 1;
+    drawings.box.Filled = false;
+    drawings.box.Color = settings.defaultcolor;
+    drawings.box.Visible = false;
+    drawings.box.ZIndex = 2;
+ 
+    drawings.boxoutline = newDrawing("Square");
+    drawings.boxoutline.Thickness = 3;
+    drawings.boxoutline.Filled = false;
+    drawings.boxoutline.Color = newColor3();
+    drawings.boxoutline.Visible = false;
+    drawings.boxoutline.ZIndex = 1;
+ 
+    espCache[player] = drawings;
+ end
+ 
+ local function removeEsp(player)
+    if rawget(espCache, player) then
+        for _, drawing in next, espCache[player] do
+            drawing:Remove();
+        end
+        espCache[player] = nil;
+    end
+ end
+ 
+ local function updateEsp(player, esp)
+    local character = player and player.Character;
+    if character then
+        local cframe = character:GetModelCFrame();
+        local position, visible, depth = wtvp(cframe.Position);
+        esp.box.Visible = visible;
+        esp.boxoutline.Visible = visible;
+ 
+        if cframe and visible then
+            local scaleFactor = 1 / (depth * tan(rad(camera.FieldOfView / 2)) * 2) * 1000;
+            local width, height = round(4 * scaleFactor, 5 * scaleFactor);
+            local x, y = round(position.X, position.Y);
+ 
+            esp.box.Size = newVector2(width, height);
+            esp.box.Position = newVector2(round(x - width / 2, y - height / 2));
+            esp.box.Color = settings.teamcolor and player.TeamColor.Color or settings.defaultcolor;
+ 
+            esp.boxoutline.Size = esp.box.Size;
+            esp.boxoutline.Position = esp.box.Position;
+        end
+    else
+        esp.box.Visible = false;
+        esp.boxoutline.Visible = false;
+    end
+ end
+ 
+ for _, player in next, players:GetPlayers() do
+    if player ~= localPlayer then
+        createEsp(player);
+    end
+ end
+ 
+ players.PlayerAdded:Connect(function(player)
+    createEsp(player);
+ end);
+ 
+ players.PlayerRemoving:Connect(function(player)
+    removeEsp(player);
+ end)
+ 
+ runService:BindToRenderStep("esp", Enum.RenderPriority.Camera.Value, function()
+    for player, drawings in next, espCache do
+        if settings.teamcheck and player.Team == localPlayer.Team then
+            continue;
+        end
+ 
+        if drawings and player ~= localPlayer then
+            updateEsp(player, drawings);
+        end
+    end
+ end)
+end)
+
+sec:Button("Tracer ESP", function()
+  print("being worked on lol -script")
+end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local tab4 = win:Tab("Armour/Tools")
+
+local sec = tab4:Section("Exclusive Armour/Tools")
+
+sec:Button("Glowshroom Cap", function()
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Glowshroom Cap")
+end)
+
+
+sec:Button("Christmas Tree Stick", function()
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Christmas Tree Stick")
+end)
+
+sec:Button("Candy Cane Club", function()
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Candy Cane Club")
+end)
+
+
+sec:Button("Candy Cane Pick", function()
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Candy Cane Pick")
+end)
+
+sec:Button("Gloves", function()
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Gloves")
+end)
+
+sec:Button("God Rod", function()
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("God Rod")
+end)
+
+
+
+
+
+
+local sec = tab4:Section("Full Sets of Armour")
+
+sec:Button("Full God Armour", function()
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("God Halo")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("God Chestplate")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("God Legs")
+end)
+
+
+sec:Button("Full Void Armour", function()
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Void Shroud")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Void Chestplate")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Void Greaves")
+end)
+
+
+sec:Button("Full Pink Diamond Armour", function()
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Pink Diamond Hood")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Pink DIamond Chestplate")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Pink Diamond Greaves")
+end)
+
+
+sec:Button("Full Emerald Armour", function()
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Emerald Helmet")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Emerald Chestplate")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Emerald Greaves")
+end)
+
+sec:Button("Full Magnetite Armour", function()
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Magnetite Mask")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Magnetite Chestplate")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Magnetite Greaves")
+end)
+
+sec:Button("Full Crystal Armour", function()
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Crystal Crown")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Crystal Chestplate")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Crystal Greaves")
+end)
+
+sec:Button("Full Adurite Armour", function()
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Adurite Helmet")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Adurite Chestplate")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Adurite Greaves")
+end)
+
+sec:Button("Full Steel Armour", function()
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Steel Helmet")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Steel Chestplate")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Steel Greaves")
+end)
+
+sec:Button("Full Iron Armour", function()
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Iron Helmet")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Iron Chestplate")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Iron Greaves")
+end)
+
+sec:Button("Full Hide Armour", function()
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Hide Shirt")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Hide Pants")
+end)
+
+sec:Button("Full Leaf Armour", function()
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Leaf Shirt")
+wait(0.2)
+  game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Leaf Pants")
+end)
+
+
+
+
+
+
+
+
+local sec = tab4:Section("Full Sets of Tools")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local tab = win:Tab("Teleports")
+local sec = tab:Section("its hard to make teleports so just enjoy these four lmfao")
+
+sec:Button("TP Void", function()
+  game:GetService("TeleportService"):Teleport(2021740958)
+  print('VoidTP Credits: script#6185')
+end)
+
+
+sec:Button("TP Aether   {under construction}", function()
+  game:GetService("TeleportService"):Teleport(nil)
+  print('VoidTP Credits: script#6185')
+end)
+
+
+sec:Button("TP Ancient Tree", function()
+
+end)
+
+
+sec:Button("TP Volcano", function()
+  for i,v in pairs(workspace:GetDescendants()) do
+    if v:IsA("TouchTransmitter") then
+    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 0)
+    end
+    end
+end)
+
+
+
+
+
+
+
+
+
+local tab = win:Tab("Animations")
+local sec = tab:Section("walk animations")
+
+sec:Button("Zombie Animation", function()
+  loadstring(game:HttpGet("https://pastebin.com/raw/t3yTSPRn",true))()
+end)
+
+sec:Button("Ninja Animation", function()
+  loadstring(game:HttpGet("https://pastebin.com/raw/bwGLPVV7",true))()
+end)
+
+sec:Button("Robot Animation", function()
+  local Animate =
+ 
+game.Players.LocalPlayer.Character.Animate
+ 
+Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616088211"
+ 
+Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616089559"
+ 
+Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616095330"
+ 
+Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616091570"
+ 
+Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616090535"
+ 
+Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616086039"
+ 
+Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616087089"
+end)
+
+sec:Button("Toy Animation", function()
+  local Animate =
+ 
+game.Players.LocalPlayer.Character.Animate
+ 
+Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=782841498"
+ 
+Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=782845736"
+ 
+Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=782843345"
+ 
+Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=782842708"
+ 
+Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=782847020"
+ 
+Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=782843869"
+ 
+Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=782846423"
+end)
